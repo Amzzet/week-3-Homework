@@ -4,14 +4,14 @@ const bElement = document.getElementById("b");
 const colorDisplayElement = document.getElementById("color-display");
 
 const levels = Array.from(document.getElementsByClassName("mode"));
-const squares = Array.from(document.getElementsByClassName("square"));
-
 let selectedLevelButton = levels.find((level) => {
     const classList = Array.from(level.classList);
     return classList.includes("selected");
 });
 
 let gameLevel = selectedLevelButton.innerHTML;
+let squares = getSquares()
+
 
 levels.forEach((level) => {
     level.addEventListener("click",function () {
@@ -19,27 +19,50 @@ levels.forEach((level) => {
         this.classList.add("selected");
 
         gameLevel = this.innerHTML;
+        SetTilesAccordingtogame(gameLevel)
+        squares = getSquares()
     });
 });
+function getSquares(){
+    const AllSquares = Array.from(document.getElementsByClassName("square"));
+    if (gameLevel === "Easy"){
+        return AllSquares.slice(0,3)
+    } else{
+        return AllSquares
+    }
+
+}
+
+function SetTilesAccordingtogame(CurrentGameLevel) {
+    const AllSquares = Array.from(document.getElementsByClassName("square"));
+    if (CurrentGameLevel === "Easy") {
+        const FirstThreeSquares = AllSquares.slice(0,3)
+        const LastThreeSquares = AllSquares.slice(3,6)  
+// Showing only the first three squares 
+        LastThreeSquares.forEach(sq => sq.classList.add("hidden"))
+        
+    }else if (CurrentGameLevel === "Hard") {
+        AllSquares.forEach(sq => sq.classList.remove("hidden"))
+        //showing allsquares
+    }     
+}
 
 //Attempt to make all squares  have background colar
  // assign each square a background colar
-     // string concentation
+     // string interpolation inside of concentation
     // to combine the array (list) into a string using jsonstringfy
      // assign the header a random rgb value from one of the square values
 
 const startButton = document.getElementById("reset");
 
 startButton.addEventListener("click",function() {
-    this.innerHTML = "New Colors"
-  
+    this.innerHTML = "New Colors";
     for (let i = 0; i < squares.length; i = i + 1) {
 
         const red = Math.floor(Math.random() * 256);
         const green = Math.floor(Math.random() * 256);
         const blue = Math.floor(Math.random() * 256); 
        
-
         const rgbString = "rgb(" + red + "," + green +"," + blue + " )";
 
         const square = squares[i];
@@ -48,7 +71,7 @@ startButton.addEventListener("click",function() {
         square.style.backgroundColor = rgbString;
     }
    
-    const randomSquareIndex = Math.floor(Math.random() * 6);
+    const randomSquareIndex = Math.floor(Math.random() * squares.length);
     const headerColorSquare = squares[randomSquareIndex];
     setHeaderRgbBackgroundColor(headerColorSquare); 
 });
@@ -77,13 +100,13 @@ function  setHeaderRgbBackgroundColor(squareElement) {
 //adding event listener  to each square so that it either disappers or changes
 squares.forEach((square) => {
     square.addEventListener("click", function() {
-        const headerRgbValue = colorDisplayElement.dataset.rgbValue;
+        const headerRgbValue = colorDisplayElement.dataset.rgb_value;
         const squareRgbValue = this.dataset.rgb_value;
 
         if (headerRgbValue === squareRgbValue) {
-            setSquareBackgroundAfterWin(headerRgbValue);
+            setSquareBackgroundAfterWin(headerRgbValue)
 
-        } else{
+        }else{
             this.classList.add("hidden");
         }
 
@@ -100,11 +123,3 @@ function setSquareBackgroundAfterWin(headerRgbString) {
 
     });
 }
-
-
-    
-
-
-    
-  
-  
